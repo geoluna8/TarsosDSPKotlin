@@ -11,18 +11,26 @@ import be.tarsos.dsp.pitch.PitchDetectionHandler
 import be.tarsos.dsp.pitch.PitchDetectionResult
 import be.tarsos.dsp.pitch.PitchProcessor
 import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.System.console
+import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
 
     var captura = false
-    var arr : ArrayList<Float> = ArrayList()
+    var arr : ArrayList<Float> = ArrayList() //Array donde captura las frecuencias
+    //var arr = arrayOf<Float>();
     val colorRojo = "#e60000"
     val colorVerde = "#009933"
+    //var array1 : DoubleArray = doubleArrayOf(2.0,3.0,4.0,2.0)
+    //var array2 : DoubleArray = doubleArrayOf(1.0,-2.0,1.0,3.0)
+    var sum = 0.0
+    var frecEjercicio = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        
         val dispatcher = AudioDispatcherFactory.fromDefaultMicrophone(22050, 1024, 0)
 
         val pdh = PitchDetectionHandler { res, e ->
@@ -67,8 +75,10 @@ class MainActivity : AppCompatActivity() {
 
         verCaptura.setOnClickListener {
             println(arr)
+            frecEjercicio = editTextFrec.text.toString().toDouble()
             Toast.makeText(this, "Captura mostrada en consola", Toast.LENGTH_SHORT).show()
-        }
+            calcularDistancia(this.arr, frecEjercicio)
+        } //Termina verCaptura
 
     } //termina onCreate
 
@@ -114,7 +124,18 @@ class MainActivity : AppCompatActivity() {
         }
     } //termina processPitch
 
-
+    fun calcularDistancia(array1: ArrayList<Float>, frecEjercicio: Double){
+        println(frecEjercicio)
+        val arrayEntrada = array1.toFloatArray()
+        val arrayDestino = DoubleArray(array1.size, { frecEjercicio } )
+        for (i in 0 until array1.size) {
+            this.sum = this.sum + Math.pow(arrayEntrada[i] - arrayDestino[i], 2.0)
+        }
+        //return Math.sqrt(Sum);
+        println(Arrays.toString(arrayDestino))
+        println(Math.sqrt(this.sum))
+        textDistancia.setText((Math.sqrt(this.sum)).toString())
+    } //Termina calcular distancia
 
 
 
